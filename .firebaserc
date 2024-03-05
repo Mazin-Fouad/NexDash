@@ -1,0 +1,14 @@
+{
+  "targets": {
+    "nexdash-2674f": {
+      "hosting": {
+        "nexdash": [
+          "nexdash-2674f"
+        ]
+      }
+    }
+  },
+  "projects": {
+    "default": "nexdash-2674f"
+  }
+}
