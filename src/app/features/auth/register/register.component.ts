@@ -1,7 +1,6 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { FormBuilder, FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
 import { AuthService } from '../../../core/services/auth/auth.service';
-import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 
 @Component({
@@ -13,7 +12,6 @@ import { Router } from '@angular/router';
 })
 export class RegisterComponent   {
  fb = inject(FormBuilder);
- http = inject(HttpClient);
  authService = inject(AuthService);
  router = inject(Router);
   
@@ -23,22 +21,32 @@ export class RegisterComponent   {
   password: new FormControl('', [Validators.required, Validators.minLength(6)])
 });
 errorMessage: string | null = null;
+isRegistered = false;
 
 onSubmit(){
   if (this.form.valid) {
     const rawForm = this.form.getRawValue();
     this.authService.register(rawForm.email!, rawForm.password!, rawForm.fullName!).subscribe({
-      // next: () => this.router.navigate(['/']),
+      complete: () => this.isRegistered = true,
       error: (error) => {
         // Handle registration error
         this.errorMessage = 'Registration failed. Please try again.' + error;
       }
     });
-  } else {
-    // Trigger validation messages if form is not valid
-    this.form.markAllAsTouched();
-  }
+  } 
 }
 
+signUpWithGoogle() {
+  this.authService.signInWithGoogle().subscribe({
+    next: (userCredential) => {
+      // Handle successful Google sign-up, if needed
+      this.isRegistered = true;
+    },
+    error: (error) => {
+      // Handle Google sign-up error
+      this.errorMessage = 'Google sign-up failed. Please try again.' + error;
+    }
+  });
+}
 
 }

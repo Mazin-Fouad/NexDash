@@ -1,11 +1,13 @@
+import { HttpClient } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
-import { Auth, createUserWithEmailAndPassword, updateProfile } from '@angular/fire/auth';
-import { response } from 'express';
+import { Auth, GoogleAuthProvider, createUserWithEmailAndPassword, signInWithPopup, updateProfile } from '@angular/fire/auth';
 import { Observable, from } from 'rxjs';
+import { UserCredential } from '@angular/fire/auth';
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
+  http = inject(HttpClient);
 
   firbaseAuth = inject(Auth);
 
@@ -13,4 +15,11 @@ export class AuthService {
     const promise = createUserWithEmailAndPassword(this.firbaseAuth, email, password).then(respons => updateProfile(respons.user, {displayName: fullName}));
     return from(promise);
   }
+
+  signInWithGoogle(): Observable<UserCredential> {
+    const provider = new GoogleAuthProvider();
+    const promise = signInWithPopup(this.firbaseAuth, provider);
+    return from(promise);
+  }
 }
+
