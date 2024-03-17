@@ -1,11 +1,11 @@
 import { Component } from '@angular/core';
 import { RegisterComponent } from '../auth/register/register.component';
-import { LoginComponent } from '../auth/login/login.component';
+import { RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-layout',
   standalone: true,
-  imports: [RegisterComponent, LoginComponent],
+  imports: [RegisterComponent,RouterModule],
   templateUrl: './layout.component.html',
   styleUrl: './layout.component.scss'
 })
