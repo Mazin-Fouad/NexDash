@@ -17,6 +17,7 @@ import { UserCredential } from '@angular/fire/auth';
 export class AuthService {
   http = inject(HttpClient);
   firebaseAuth = inject(Auth);
+  isLoggedIn = false;
 
   /**
    * Create user and then update their profile with the provided full name
@@ -64,6 +65,17 @@ export class AuthService {
       email,
       password
     ).then(() => {});
+    this.isLoggedIn = true;
     return from(promise);
+  }
+
+  logOut(): Observable<void> {
+    const promise = this.firebaseAuth.signOut();
+    this.isLoggedIn = false;
+    return from(promise);
+  }
+
+  isAuthenticated(): boolean {
+    return this.isLoggedIn;
   }
 }

@@ -35,7 +35,6 @@ export class LoginComponent {
         next: (userCredential) => {
           console.log('Logged in successfully', userCredential);
           this.router.navigate(['/main']);
-          console.log('Logged in successfully', userCredential);
         },
         error: (error) => {
           console.error('Login failed', error);
@@ -49,6 +48,7 @@ export class LoginComponent {
     this.authService.signInWithGoogle().subscribe({
       next: (userCredential) => {
         // Handle successful Google sign-up, if needed
+        console.log('Google sign-up successful', userCredential);
         this.router.navigate(['/main']);
       },
       error: (error) => {
