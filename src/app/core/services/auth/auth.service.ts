@@ -5,6 +5,7 @@ import {
   GoogleAuthProvider,
   createUserWithEmailAndPassword,
   sendEmailVerification,
+  sendPasswordResetEmail,
   signInWithEmailAndPassword,
   signInWithPopup,
   updateProfile,
@@ -30,7 +31,7 @@ export class AuthService {
   register(
     email: string,
     password: string,
-    fullName: string
+    displayName: string
   ): Observable<void> {
     // Create user and then update their profile with the provided full name
     const promise = createUserWithEmailAndPassword(
@@ -39,7 +40,7 @@ export class AuthService {
       password
     ).then((response) => {
       // Update the user's profile with the provided full name
-      updateProfile(response.user, { displayName: fullName }).then(() => {
+      updateProfile(response.user, { displayName: displayName }).then(() => {
         // Send verification email
         sendEmailVerification(response.user);
       });
@@ -77,5 +78,10 @@ export class AuthService {
 
   isAuthenticated(): boolean {
     return this.isLoggedIn;
+  }
+
+  resetPassword(email: string): Observable<void> {
+    const promise = sendPasswordResetEmail(this.firebaseAuth, email);
+    return from(promise);
   }
 }
