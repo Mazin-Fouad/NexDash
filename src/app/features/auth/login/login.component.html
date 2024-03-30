@@ -1,11 +1,16 @@
 <section class="h-dvh">
-  <div class="dark:bg-slate-900 bg-gray-100 flex h-full items-center py-16">
+  <div class="flex h-full items-center py-16">
     <main class="w-full max-w-md mx-auto p-6">
       <div
         class="mt-7 bg-white border border-gray-200 rounded-xl shadow-sm dark:bg-gray-800 dark:border-gray-700"
       >
         <div class="p-4 sm:p-7">
           <div class="text-center">
+            <img
+              class="w-1/12 mx-auto"
+              src="/assets/imgs/logo_transparent.png"
+              alt="logo_transparent"
+            />
             <h1 class="block text-2xl font-bold text-gray-800 dark:text-white">
               Sign in
             </h1>
@@ -78,27 +83,24 @@
                       required
                       aria-describedby="email-error"
                     />
-                    <div
-                      class="hidden absolute inset-y-0 end-0 pointer-events-none pe-3"
-                    >
-                      <svg
-                        class="size-5 text-red-500"
-                        width="16"
-                        height="16"
-                        fill="currentColor"
-                        viewBox="0 0 16 16"
-                        aria-hidden="true"
-                      >
-                        <path
-                          d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM8 4a.905.905 0 0 0-.9.995l.35 3.507a.552.552 0 0 0 1.1 0l.35-3.507A.905.905 0 0 0 8 4zm.002 6a1 1 0 1 0 0 2 1 1 0 0 0 0-2z"
-                        />
-                      </svg>
-                    </div>
                   </div>
-                  <p class="hidden text-xs text-red-600 mt-2" id="email-error">
-                    Please include a valid email address so we can get back to
-                    you
-                  </p>
+
+                  <!-- Email Field Error Messages -->
+                  <div
+                    *ngIf="
+                      loginForm.get('email')?.touched &&
+                      loginForm.get('email')?.invalid
+                    "
+                    class="text-xs text-red-600 mt-2"
+                    id="email-error"
+                  >
+                    <p *ngIf="loginForm.get('email')?.errors?.['required']">
+                      Email is required.
+                    </p>
+                    <p *ngIf="loginForm.get('email')?.errors?.['email']">
+                      Please include a valid email address.
+                    </p>
+                  </div>
                 </div>
                 <!-- End Form Group -->
 
@@ -127,31 +129,34 @@
                       required
                       aria-describedby="password-error"
                     />
+                    <!-- Password Field Error Messages -->
                     <div
-                      class="hidden absolute inset-y-0 end-0 pointer-events-none pe-3"
+                      *ngIf="
+                        loginForm.get('password')?.touched &&
+                        loginForm.get('password')?.invalid
+                      "
+                      class="text-xs text-red-600 mt-2"
+                      id="password-error"
                     >
-                      <svg
-                        class="size-5 text-red-500"
-                        width="16"
-                        height="16"
-                        fill="currentColor"
-                        viewBox="0 0 16 16"
-                        aria-hidden="true"
+                      <p
+                        *ngIf="loginForm.get('password')?.errors?.['required']"
                       >
-                        <path
-                          d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM8 4a.905.905 0 0 0-.9.995l.35 3.507a.552.552 0 0 0 1.1 0l.35-3.507A.905.905 0 0 0 8 4zm.002 6a1 1 0 1 0 0 2 1 1 0 0 0 0-2z"
-                        />
-                      </svg>
+                        Password is required.
+                      </p>
+                      <p
+                        *ngIf="loginForm.get('password')?.errors?.['minlength']"
+                      >
+                        Password must be at least 6 characters long.
+                      </p>
                     </div>
                   </div>
                 </div>
                 <!-- End Form Group -->
 
-                <!-- Checkbox -->
-                <div class="flex justify-center text-white">
+                <!-- Login Error Message-->
+                <div class="flex justify-center text-red-800">
                   {{ errorMessage }}
                 </div>
-                <!-- End Checkbox -->
 
                 <button
                   type="submit"

@@ -10,8 +10,9 @@ import {
   signInWithPopup,
   updateProfile,
 } from '@angular/fire/auth';
-import { Observable, from } from 'rxjs';
+import { Observable, from, of, tap } from 'rxjs';
 import { UserCredential } from '@angular/fire/auth';
+import { profile } from 'console';
 @Injectable({
   providedIn: 'root',
 })
@@ -40,7 +41,10 @@ export class AuthService {
       password
     ).then((response) => {
       // Update the user's profile with the provided full name
-      updateProfile(response.user, { displayName: displayName }).then(() => {
+      updateProfile(response.user, {
+        displayName: displayName,
+        // photoURL: 'https://picsum.photos/seed/picsum/200/300',
+      }).then(() => {
         // Send verification email
         sendEmailVerification(response.user);
       });
@@ -57,31 +61,67 @@ export class AuthService {
   signInWithGoogle(): Observable<UserCredential> {
     const provider = new GoogleAuthProvider();
     const promise = signInWithPopup(this.firebaseAuth, provider);
-    return from(promise);
-  }
-
-  login(email: string, password: string): Observable<void> {
-    const promise = signInWithEmailAndPassword(
-      this.firebaseAuth,
-      email,
-      password
-    ).then(() => {});
     this.isLoggedIn = true;
     return from(promise);
   }
 
-  logOut(): Observable<void> {
-    const promise = this.firebaseAuth.signOut();
-    this.isLoggedIn = false;
-    return from(promise);
+  /**
+   * Logs in a user with the provided email and password.
+   *
+   * @param {string} email - The user's email address.
+   * @param {string} password - The user's password.
+   * @return {Observable<UserCredential>} An observable that emits a UserCredential object upon successful login.
+   */
+  login(email: string, password: string): Observable<UserCredential> {
+    const promise = signInWithEmailAndPassword(
+      this.firebaseAuth,
+      email,
+      password
+    );
+    return from(promise).pipe(
+      tap((userCredential: UserCredential) => {
+        this.isLoggedIn = true; // Set isLoggedIn here only after successful login
+      })
+    );
   }
 
+  logout(): Observable<void> {
+    return from(this.firebaseAuth.signOut()).pipe(
+      tap({
+        next: () => {
+          this.isLoggedIn = false; // Set isLoggedIn to false only after successful logout
+        },
+        error: () => {
+          console.error('Error during sign out');
+          // Handle any errors that occur during logout
+        },
+      })
+    );
+  }
+
+  /**
+   * Checks if the user is authenticated.
+   *
+   * @return {boolean} the authentication status of the user
+   */
   isAuthenticated(): boolean {
     return this.isLoggedIn;
   }
 
+  /**
+   * Resets the password for the user with the given email.
+   *
+   * @param {string} email - The email address of the user.
+   * @return {Observable<void>} An observable that emits void when the password reset email is sent successfully.
+   */
   resetPassword(email: string): Observable<void> {
     const promise = sendPasswordResetEmail(this.firebaseAuth, email);
     return from(promise);
+  }
+
+  getCurrentUser(): Observable<any> {
+    const user = this.firebaseAuth.currentUser;
+    // Wrap the user in an Observable. Use of() if the user exists, otherwise, emit null
+    return of(user);
   }
 }

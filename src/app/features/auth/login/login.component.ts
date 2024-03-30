@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import {
   FormBuilder,
   FormControl,
@@ -7,15 +7,17 @@ import {
 } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
 import { AuthService } from '../../../core/services/auth/auth.service';
+import { UserCredential } from '@angular/fire/auth';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [RouterModule, ReactiveFormsModule],
+  imports: [RouterModule, ReactiveFormsModule, CommonModule],
   templateUrl: './login.component.html',
   styleUrl: './login.component.scss',
 })
-export class LoginComponent {
+export class LoginComponent implements OnInit {
   authService = inject(AuthService);
   router = inject(Router);
   fb = inject(FormBuilder);
@@ -28,13 +30,25 @@ export class LoginComponent {
   });
   errorMessage: string | null = null;
 
-  onSubmit() {
+  ngOnInit(): void {
+    this.checkLoginStatus();
+  }
+  checkLoginStatus() {
+    const token = localStorage.getItem('token');
+    if (token) {
+      this.router.navigate(['/main']);
+    }
+  }
+
+  onSubmit(): void {
     if (this.loginForm.valid) {
       const { email, password } = this.loginForm.getRawValue();
       this.authService.login(email!, password!).subscribe({
-        next: (userCredential) => {
+        next: (userCredential: any) => {
           console.log('Logged in successfully', userCredential);
-          this.router.navigate(['/main']);
+          const token = userCredential._tokenResponse.idToken; // Use the correct property to access the token
+          localStorage.setItem('token', token);
+          this.router.navigateByUrl('/main');
         },
         error: (error) => {
           console.error('Login failed', error);
@@ -46,9 +60,10 @@ export class LoginComponent {
 
   signUpWithGoogle() {
     this.authService.signInWithGoogle().subscribe({
-      next: (userCredential) => {
+      next: (userCredential: any) => {
         // Handle successful Google sign-up, if needed
         console.log('Google sign-up successful', userCredential);
+        localStorage.setItem('token', userCredential._tokenResponse.idToken);
         this.router.navigate(['/main']);
       },
       error: (error) => {
