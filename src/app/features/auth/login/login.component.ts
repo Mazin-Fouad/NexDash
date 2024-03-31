@@ -34,9 +34,11 @@ export class LoginComponent implements OnInit {
     this.checkLoginStatus();
   }
   checkLoginStatus() {
-    const token = localStorage.getItem('token');
-    if (token) {
-      this.router.navigate(['/main']);
+    if (typeof window !== 'undefined') {
+      const token = localStorage.getItem('token');
+      if (token) {
+        this.router.navigate(['/main']);
+      }
     }
   }
 
@@ -46,7 +48,7 @@ export class LoginComponent implements OnInit {
       this.authService.login(email!, password!).subscribe({
         next: (userCredential: any) => {
           console.log('Logged in successfully', userCredential);
-          const token = userCredential._tokenResponse.idToken; // Use the correct property to access the token
+          const token = userCredential._tokenResponse.idToken;
           localStorage.setItem('token', token);
           this.router.navigateByUrl('/main');
         },
