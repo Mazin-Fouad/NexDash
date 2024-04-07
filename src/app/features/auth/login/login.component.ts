@@ -7,7 +7,6 @@ import {
 } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
 import { AuthService } from '../../../core/services/auth/auth.service';
-import { UserCredential } from '@angular/fire/auth';
 import { CommonModule } from '@angular/common';
 
 @Component({
@@ -15,7 +14,7 @@ import { CommonModule } from '@angular/common';
   standalone: true,
   imports: [RouterModule, ReactiveFormsModule, CommonModule],
   templateUrl: './login.component.html',
-  styleUrl: './login.component.scss',
+  styleUrls: ['./login.component.scss'], // Corrected from styleUrl to styleUrls
 })
 export class LoginComponent implements OnInit {
   authService = inject(AuthService);
@@ -28,11 +27,12 @@ export class LoginComponent implements OnInit {
       Validators.minLength(6),
     ]),
   });
-  errorMessage: string | null = null;
+  errorMessage: string = '';
 
   ngOnInit(): void {
     this.checkLoginStatus();
   }
+
   checkLoginStatus() {
     if (typeof window !== 'undefined') {
       const token = localStorage.getItem('token');
@@ -53,8 +53,8 @@ export class LoginComponent implements OnInit {
           this.router.navigateByUrl('/main');
         },
         error: (error) => {
-          console.error('Login failed', error);
-          this.errorMessage = 'Login failed. Please try again.';
+          this.errorMessage =
+            'Failed to login. Please check your credentials and try again.';
         },
       });
     }
@@ -63,14 +63,9 @@ export class LoginComponent implements OnInit {
   signUpWithGoogle() {
     this.authService.signInWithGoogle().subscribe({
       next: (userCredential: any) => {
-        // Handle successful Google sign-up, if needed
         console.log('Google sign-up successful', userCredential);
         localStorage.setItem('token', userCredential._tokenResponse.idToken);
         this.router.navigate(['/main']);
-      },
-      error: (error) => {
-        // Handle Google sign-up error
-        this.errorMessage = 'Google sign-up failed. Please try again.';
       },
     });
   }

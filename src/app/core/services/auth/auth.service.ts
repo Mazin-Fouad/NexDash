@@ -3,16 +3,21 @@ import { Injectable, inject } from '@angular/core';
 import {
   Auth,
   GoogleAuthProvider,
+  User,
   createUserWithEmailAndPassword,
+  onAuthStateChanged,
   sendEmailVerification,
   sendPasswordResetEmail,
   signInWithEmailAndPassword,
   signInWithPopup,
+  updateEmail,
+  updatePassword,
   updateProfile,
 } from '@angular/fire/auth';
-import { Observable, from, of, tap } from 'rxjs';
+import { Observable, from, tap } from 'rxjs';
 import { UserCredential } from '@angular/fire/auth';
-import { profile } from 'console';
+import { ErrorHandlerService } from '../errorHandler/error-handler.service';
+
 @Injectable({
   providedIn: 'root',
 })
@@ -20,6 +25,7 @@ export class AuthService {
   http = inject(HttpClient);
   firebaseAuth = inject(Auth);
   isLoggedIn = false;
+  handleErrorService = inject(ErrorHandlerService);
 
   /**
    * Create user and then update their profile with the provided full name
@@ -43,7 +49,6 @@ export class AuthService {
       // Update the user's profile with the provided full name
       updateProfile(response.user, {
         displayName: displayName,
-        // photoURL: 'https://picsum.photos/seed/picsum/200/300',
       }).then(() => {
         // Send verification email
         sendEmailVerification(response.user);
@@ -93,7 +98,6 @@ export class AuthService {
         },
         error: () => {
           console.error('Error during sign out');
-          // Handle any errors that occur during logout
         },
       })
     );
@@ -119,9 +123,55 @@ export class AuthService {
     return from(promise);
   }
 
-  getCurrentUser(): Observable<any> {
-    const user = this.firebaseAuth.currentUser;
-    // Wrap the user in an Observable. Use of() if the user exists, otherwise, emit null
-    return of(user);
+  getCurrentUser(): Observable<User | null> {
+    // Listen to the Firebase Auth state and return it as an Observable
+    return new Observable((subscriber) => {
+      const unsubscribe = onAuthStateChanged(
+        this.firebaseAuth,
+        (user) => {
+          subscriber.next(user);
+        },
+        (error) => {
+          subscriber.error(error);
+        }
+      );
+      // Provide a way for the subscription to unsubscribe the onAuthStateChanged listener
+      return unsubscribe;
+    });
+  }
+
+  /**
+   * Updates the user profile with provided details.
+   *
+   * @param {string | null} displayName - New display name for the user.
+   * @param {string | null} email - New email address for the user.
+   * @param {string | null} password - New password for the user.
+   * @param {string | null} photoURL - New photo URL for the user's profile.
+   * @return {Observable<void>} An observable that completes when the profile is updated.
+   */
+  updateUserProfile(
+    displayName: string | null,
+    email: string | null,
+    password: string | null,
+    photoURL: string | null
+  ): Observable<void> {
+    const updateOps = async () => {
+      const user = await this.firebaseAuth.currentUser;
+      if (!user) throw new Error('Not authenticated');
+
+      if (displayName !== null || photoURL !== null) {
+        await updateProfile(user, { displayName, photoURL });
+      }
+
+      if (email !== null) {
+        await updateEmail(user, email);
+      }
+
+      if (password !== null) {
+        await updatePassword(user, password);
+      }
+    };
+
+    return from(updateOps());
   }
 }

@@ -97,15 +97,15 @@
               data-dropdown-toggle="dropdown-user"
             >
               <span class="sr-only">Open user menu</span>
-              @if (!currentUser) {
               <img
                 class="w-8 h-8 rounded-full"
-                src="https://flowbite.com/docs/images/people/profile-picture-5.jpg"
+                [src]="
+                  currentUser?.profileImg
+                    ? currentUser?.profileImg
+                    : '/assets/imgs/default-user.png'
+                "
                 alt="user photo"
               />
-              }@else if (currentUser) {
-              <img [src]="currentUser.profileImg" alt="Profile-img" />
-              }
             </button>
           </div>
           <div
@@ -114,17 +114,15 @@
           >
             <div class="px-4 py-3" role="none">
               <p class="text-sm text-gray-900 dark:text-white" role="none">
-                {{ currentUser.displayName }}
+                {{ currentUser?.displayName }}
               </p>
             </div>
             <ul class="py-1" role="none">
-              <li>
+              <li class="cursor-pointer" (click)="openDialog()">
                 <a
-                  href="#"
                   class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-600 dark:hover:text-white"
-                  role="menuitem"
-                  >Settings</a
-                >
+                  >Edit
+                </a>
               </li>
               <li (click)="signOut()">
                 <a

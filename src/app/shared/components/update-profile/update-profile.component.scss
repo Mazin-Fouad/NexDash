@@ -1,0 +1,22 @@
+.modal-container {
+    display: flex; /* Use flexbox to align children */
+    justify-content: center; /* Center horizontally */
+    align-items: center; /* Center vertically */
+    position: fixed; /* Take out of normal document flow */
+    top: 0;
+    left: 0;
+    width: 100%; /* Full width */
+    height: 100%; /* Full height */
+    background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent background */
+    z-index: 50; /* Ensure it's above other content */
+}
+
+.modal-content {
+    background-color: #fff; /* White background */
+    padding: 20px; /* Some padding */
+    border-radius: 5px; /* Rounded corners */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* A little shadow */
+    max-width: 500px; /* Maximum width with some margin for smaller screens */
+    width: 90%; /* Use most of the screen width on small screens */
+    z-index: 51; /* Above the semi-transparent background */
+}

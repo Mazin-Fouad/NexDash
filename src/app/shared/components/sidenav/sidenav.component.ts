@@ -14,11 +14,21 @@ import { Subscription } from 'rxjs';
 import { DarkModeService } from '../../../core/services/darkMode/dark-mode.service';
 import { AuthService } from '../../../core/services/auth/auth.service';
 import { User } from '../../../core/models/user';
+import { User as FirebaseUser } from '@firebase/auth';
+import {
+  MatDialog,
+  MatDialogActions,
+  MatDialogClose,
+  MatDialogContent,
+  MatDialogTitle,
+} from '@angular/material/dialog';
+import { MatButtonModule } from '@angular/material/button';
+import { UpdateProfileComponent } from '../update-profile/update-profile.component';
 
 @Component({
   selector: 'app-sidenav',
   standalone: true,
-  imports: [CommonModule, RouterOutlet],
+  imports: [CommonModule, RouterOutlet, MatButtonModule],
   templateUrl: './sidenav.component.html',
   styleUrl: './sidenav.component.scss',
 })
@@ -27,8 +37,10 @@ export class SidenavComponent implements OnInit, OnDestroy {
   @HostBinding('class.dark') isDarkMode: boolean = false;
   authService = inject(AuthService);
   darkModeService = inject(DarkModeService);
-  currentUser: User = {} as User;
+  currentUser: User | null = null;
   router = inject(Router);
+  public dialog = inject(MatDialog);
+
   constructor(@Inject(PLATFORM_ID) private platformId: Object) {}
 
   ngOnInit(): void {
@@ -42,7 +54,7 @@ export class SidenavComponent implements OnInit, OnDestroy {
   subscribeToCurrentUser() {
     let userSubscription = this.authService
       .getCurrentUser()
-      .subscribe((user) => {
+      .subscribe((user: any) => {
         this.currentUser = user; // Assign the user data to the property
         console.log(user);
       });
@@ -72,6 +84,14 @@ export class SidenavComponent implements OnInit, OnDestroy {
 
   toggleDarkMode() {
     this.darkModeService.toggleDarkMode();
+  }
+
+  openDialog() {
+    this.dialog.open(UpdateProfileComponent, {
+      height: '512px',
+      width: '490px',
+      data: this.currentUser,
+    });
   }
 
   ngOnDestroy() {
