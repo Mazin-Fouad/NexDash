@@ -1,11 +1,14 @@
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import {
+  AfterViewInit,
   Component,
+  ElementRef,
   HostBinding,
   Inject,
   OnDestroy,
   OnInit,
   PLATFORM_ID,
+  ViewChild,
   inject,
 } from '@angular/core';
 import { Router, RouterOutlet } from '@angular/router';
@@ -22,17 +25,14 @@ import {
   MatDialogContent,
   MatDialogTitle,
 } from '@angular/material/dialog';
-import { MatButtonModule } from '@angular/material/button';
-import { UpdateProfileComponent } from '../update-profile/update-profile.component';
+import { UpdateProfileComponent } from './update-profile/update-profile.component';
 
 @Component({
   selector: 'app-sidenav',
-  standalone: true,
-  imports: [CommonModule, RouterOutlet, MatButtonModule],
   templateUrl: './sidenav.component.html',
   styleUrl: './sidenav.component.scss',
 })
-export class SidenavComponent implements OnInit, OnDestroy {
+export class SidenavComponent implements OnInit, OnDestroy, AfterViewInit {
   private subscriptions: Subscription[] = [];
   @HostBinding('class.dark') isDarkMode: boolean = false;
   authService = inject(AuthService);
@@ -40,6 +40,7 @@ export class SidenavComponent implements OnInit, OnDestroy {
   currentUser: User | null = null;
   router = inject(Router);
   public dialog = inject(MatDialog);
+  @ViewChild('dashboardLink') dashboardLink!: ElementRef;
 
   constructor(@Inject(PLATFORM_ID) private platformId: Object) {}
 
@@ -92,6 +93,10 @@ export class SidenavComponent implements OnInit, OnDestroy {
       width: '490px',
       data: this.currentUser,
     });
+  }
+
+  ngAfterViewInit(): void {
+    this.dashboardLink.nativeElement.click();
   }
 
   ngOnDestroy() {

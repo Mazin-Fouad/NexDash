@@ -2,7 +2,17 @@
   class="w-full bg-white text-gray-900 dark:bg-gray-800 dark:text-white p-3"
 >
   <h1 class="text-2xl font-thin text-gray-900 dark:text-white">Edit Profile</h1>
-  <!-- <form class="max-w-sm me-auto mt-6">
+  <form
+    class="max-w-sm me-auto mt-6"
+    (ngSubmit)="
+      updateProfile(
+        displayName.value,
+        email.value,
+        password.value,
+        photoURL.value
+      )
+    "
+  >
     <div class="mb-5">
       <label
         for="email"
@@ -10,6 +20,7 @@
         >Enter new Email</label
       >
       <input
+        #email
         [value]="currentUser.email"
         type="email"
         id="email"
@@ -26,6 +37,7 @@
         >Enter new Display Name</label
       >
       <input
+        #displayName
         [value]="currentUser.displayName"
         type="text"
         id="name"
@@ -42,6 +54,7 @@
         >Enter new Password</label
       >
       <input
+        #password
         [value]="currentUser.password"
         type="password"
         id="password"
@@ -58,6 +71,7 @@
       >
       <div class="flex items-center">
         <input
+          #photoURL
           class="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400"
           aria-describedby="file_input_help"
           id="file_input"
@@ -95,22 +109,5 @@
     >
       Cancel
     </button>
-  </form> -->
-
-  <form
-    (ngSubmit)="
-      updateProfile(
-        displayName.value,
-        email.value,
-        password.value,
-        photoURL.value
-      )
-    "
-  >
-    <input type="text" #displayName placeholder="Display Name" />
-    <input type="email" #email placeholder="Email" />
-    <input type="password" #password placeholder="Password" />
-    <input type="text" #photoURL placeholder="Photo URL" />
-    <button type="submit">Update Profile</button>
   </form>
 </section>

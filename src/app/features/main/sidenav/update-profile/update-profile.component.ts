@@ -7,22 +7,25 @@ import {
   OnInit,
   inject,
 } from '@angular/core';
-import { DarkModeService } from '../../../core/services/darkMode/dark-mode.service';
+// import { DarkModeService } from '../../../core/services/darkMode/dark-mode.service';
 import { Subscription } from 'rxjs';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-import { User } from '../../../core/models/user';
-import { AuthService } from '../../../core/services/auth/auth.service';
+// import { User } from '../../../core/models/user';
+// import { AuthService } from '../../../core/services/auth/auth.service';
 import {
   FormBuilder,
   FormsModule,
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
+import { DarkModeService } from '../../../../core/services/darkMode/dark-mode.service';
+import { User } from '../../../../core/models/user';
+import { AuthService } from '../../../../core/services/auth/auth.service';
 
 @Component({
   selector: 'app-update-profile',
-  standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, FormsModule],
+  // standalone: true,
+  // imports: [CommonModule, ReactiveFormsModule, FormsModule],
   templateUrl: './update-profile.component.html',
   styleUrl: './update-profile.component.scss',
 })
