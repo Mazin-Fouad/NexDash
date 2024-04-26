@@ -9,6 +9,10 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ClientsComponent } from './clients/clients.component';
 import { MainComponent } from './main.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
+import { HttpClientModule } from '@angular/common/http';
+import { AngularFireModule } from '@angular/fire/compat';
+import { AngularFirestoreModule } from '@angular/fire/compat/firestore';
+import { environment } from '../../../environments/environment.development';
 
 @NgModule({
   declarations: [
@@ -22,9 +26,12 @@ import { DashboardComponent } from './dashboard/dashboard.component';
     CommonModule,
     MainRoutingModule,
     RouterOutlet,
+    AngularFireModule.initializeApp(environment.firebaseConfig),
+    AngularFirestoreModule,
     MatButtonModule,
     ReactiveFormsModule,
     FormsModule,
+    HttpClientModule,
   ],
 })
 export class MainModule {}
