@@ -14,9 +14,10 @@ import {
   updatePassword,
   updateProfile,
 } from '@angular/fire/auth';
-import { Observable, from, tap } from 'rxjs';
+import { Observable, catchError, from, switchMap, tap } from 'rxjs';
 import { UserCredential } from '@angular/fire/auth';
 import { ErrorHandlerService } from '../errorHandler/error-handler.service';
+import { getStorage, ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 
 @Injectable({
   providedIn: 'root',
@@ -26,6 +27,8 @@ export class AuthService {
   firebaseAuth = inject(Auth);
   isLoggedIn = false;
   handleErrorService = inject(ErrorHandlerService);
+
+  storage = getStorage();
 
   /**
    * Create user and then update their profile with the provided full name
@@ -173,5 +176,20 @@ export class AuthService {
     };
 
     return from(updateOps());
+  }
+
+  uploadProfileImage(file: File): Observable<string> {
+    const user = this.firebaseAuth.currentUser;
+    if (!user) {
+      throw new Error('Not authenticated');
+    }
+
+    const storageRef = ref(this.storage, 'profileImages/' + user.uid);
+    return from(uploadBytes(storageRef, file)).pipe(
+      switchMap(() => getDownloadURL(storageRef)),
+      catchError((error) => {
+        throw new Error('Failed to upload image: ' + error.message);
+      })
+    );
   }
 }

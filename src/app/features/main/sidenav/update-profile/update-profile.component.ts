@@ -1,4 +1,3 @@
-import { CommonModule } from '@angular/common';
 import {
   Component,
   HostBinding,
@@ -7,25 +6,14 @@ import {
   OnInit,
   inject,
 } from '@angular/core';
-// import { DarkModeService } from '../../../core/services/darkMode/dark-mode.service';
 import { Subscription } from 'rxjs';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-// import { User } from '../../../core/models/user';
-// import { AuthService } from '../../../core/services/auth/auth.service';
-import {
-  FormBuilder,
-  FormsModule,
-  ReactiveFormsModule,
-  Validators,
-} from '@angular/forms';
 import { DarkModeService } from '../../../../core/services/darkMode/dark-mode.service';
 import { User } from '../../../../core/models/user';
 import { AuthService } from '../../../../core/services/auth/auth.service';
 
 @Component({
   selector: 'app-update-profile',
-  // standalone: true,
-  // imports: [CommonModule, ReactiveFormsModule, FormsModule],
   templateUrl: './update-profile.component.html',
   styleUrl: './update-profile.component.scss',
 })
@@ -34,13 +22,6 @@ export class UpdateProfileComponent implements OnInit, OnDestroy {
   subscriptions: Subscription[] = [];
   @HostBinding('class.dark') isDarkMode: boolean = false;
   authService = inject(AuthService);
-  // fb = inject(FormBuilder);
-  // editForm = this.fb.nonNullable.group({
-  //   email: [this.currentUser.email, [Validators.email]],
-  //   password: [this.currentUser.password, [Validators.minLength(6)]],
-  //   displayName: [this.currentUser.displayName],
-  //   profileImg: [this.currentUser.profileImg],
-  // });
   selectedFile: File | null = null;
   constructor(
     public dialogRef: MatDialogRef<UpdateProfileComponent>,
@@ -64,17 +45,39 @@ export class UpdateProfileComponent implements OnInit, OnDestroy {
     this.subscriptions.forEach((subscription) => subscription.unsubscribe());
   }
 
+  onFileSelected(event: any): void {
+    if (event.target.files.length > 0) {
+      this.selectedFile = event.target.files[0];
+    }
+
+    console.log(this.selectedFile);
+  }
+
   updateProfile(
     displayName: string,
     email: string,
     password: string,
     photoURL: string
   ) {
-    this.authService
-      .updateUserProfile(displayName, email, password, photoURL)
-      .subscribe({
-        next: () => console.log('Profile updated successfully!'),
+    if (this.selectedFile) {
+      this.authService.uploadProfileImage(this.selectedFile).subscribe({
+        next: (url) => {
+          this.authService
+            .updateUserProfile(displayName, email, password, url)
+            .subscribe({
+              next: () => console.log('Profile updated successfully!'),
+              error: (error) => alert(error.message),
+            });
+        },
         error: (error) => alert(error.message),
       });
+    } else {
+      this.authService
+        .updateUserProfile(displayName, email, password, photoURL)
+        .subscribe({
+          next: () => console.log('Profile updated successfully!'),
+          error: (error) => alert(error.message),
+        });
+    }
   }
 }
