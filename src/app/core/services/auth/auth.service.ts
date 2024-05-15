@@ -23,53 +23,52 @@ import { getStorage, ref, uploadBytes, getDownloadURL } from 'firebase/storage';
   providedIn: 'root',
 })
 export class AuthService {
-  http = inject(HttpClient);
-  firebaseAuth = inject(Auth);
-  isLoggedIn = false;
-  handleErrorService = inject(ErrorHandlerService);
-
-  storage = getStorage();
+  private http = inject(HttpClient);
+  private firebaseAuth = inject(Auth);
+  private isLoggedIn = false;
+  private handleErrorService = inject(ErrorHandlerService);
+  private storage = getStorage();
 
   /**
-   * Create user and then update their profile with the provided full name
+   * Registers a new user and updates their profile with the provided display name.
    *
-   * @param {string} email - description of parameter
-   * @param {string} password - description of parameter
-   * @param {string} fullName - description of parameter
-   * @return {Observable<void>} description of return value
+   * @param {string} email - The user's email address.
+   * @param {string} password - The user's password.
+   * @param {string} displayName - The user's display name.
+   * @return {Observable<void>} An observable that completes when the user is registered and profile is updated.
    */
   register(
     email: string,
     password: string,
     displayName: string
   ): Observable<void> {
-    // Create user and then update their profile with the provided full name
     const promise = createUserWithEmailAndPassword(
       this.firebaseAuth,
       email,
       password
     ).then((response) => {
-      // Update the user's profile with the provided full name
-      updateProfile(response.user, {
-        displayName: displayName,
-      }).then(() => {
-        // Send verification email
-        sendEmailVerification(response.user);
-      });
-      return;
+      updateProfile(response.user, { displayName }).then(() =>
+        sendEmailVerification(response.user)
+      );
     });
+
     return from(promise);
   }
 
   /**
-   * signInWithGoogle function signs in with Google authentication provider.
+   * Signs in with Google authentication provider.
    *
-   * @return {Observable<UserCredential>} returns an Observable of UserCredential
+   * @return {Observable<UserCredential>} An observable of UserCredential.
    */
   signInWithGoogle(): Observable<UserCredential> {
     const provider = new GoogleAuthProvider();
-    const promise = signInWithPopup(this.firebaseAuth, provider);
-    this.isLoggedIn = true;
+    const promise = signInWithPopup(this.firebaseAuth, provider).then(
+      (userCredential) => {
+        this.isLoggedIn = true;
+        return userCredential;
+      }
+    );
+
     return from(promise);
   }
 
@@ -78,30 +77,30 @@ export class AuthService {
    *
    * @param {string} email - The user's email address.
    * @param {string} password - The user's password.
-   * @return {Observable<UserCredential>} An observable that emits a UserCredential object upon successful login.
+   * @return {Observable<UserCredential>} An observable of UserCredential upon successful login.
    */
   login(email: string, password: string): Observable<UserCredential> {
     const promise = signInWithEmailAndPassword(
       this.firebaseAuth,
       email,
       password
-    );
-    return from(promise).pipe(
-      tap((userCredential: UserCredential) => {
-        this.isLoggedIn = true; // Set isLoggedIn here only after successful login
-      })
-    );
+    ).then((userCredential) => {
+      this.isLoggedIn = true;
+      return userCredential;
+    });
+
+    return from(promise);
   }
 
+  /**
+   * Logs out the current user.
+   *
+   * @return {Observable<void>} An observable that completes when the user is logged out.
+   */
   logout(): Observable<void> {
     return from(this.firebaseAuth.signOut()).pipe(
-      tap({
-        next: () => {
-          this.isLoggedIn = false; // Set isLoggedIn to false only after successful logout
-        },
-        error: () => {
-          console.error('Error during sign out');
-        },
+      tap(() => {
+        this.isLoggedIn = false;
       })
     );
   }
@@ -109,7 +108,7 @@ export class AuthService {
   /**
    * Checks if the user is authenticated.
    *
-   * @return {boolean} the authentication status of the user
+   * @return {boolean} The authentication status of the user.
    */
   isAuthenticated(): boolean {
     return this.isLoggedIn;
@@ -119,26 +118,25 @@ export class AuthService {
    * Resets the password for the user with the given email.
    *
    * @param {string} email - The email address of the user.
-   * @return {Observable<void>} An observable that emits void when the password reset email is sent successfully.
+   * @return {Observable<void>} An observable that completes when the password reset email is sent.
    */
   resetPassword(email: string): Observable<void> {
     const promise = sendPasswordResetEmail(this.firebaseAuth, email);
     return from(promise);
   }
 
+  /**
+   * Gets the current authenticated user as an observable.
+   *
+   * @return {Observable<User | null>} An observable of the current user.
+   */
   getCurrentUser(): Observable<User | null> {
-    // Listen to the Firebase Auth state and return it as an Observable
     return new Observable((subscriber) => {
       const unsubscribe = onAuthStateChanged(
         this.firebaseAuth,
-        (user) => {
-          subscriber.next(user);
-        },
-        (error) => {
-          subscriber.error(error);
-        }
+        (user) => subscriber.next(user),
+        (error) => subscriber.error(error)
       );
-      // Provide a way for the subscription to unsubscribe the onAuthStateChanged listener
       return unsubscribe;
     });
   }
@@ -178,6 +176,12 @@ export class AuthService {
     return from(updateOps());
   }
 
+  /**
+   * Uploads a profile image for the current user.
+   *
+   * @param {File} file - The profile image file to upload.
+   * @return {Observable<string>} An observable of the download URL of the uploaded image.
+   */
   uploadProfileImage(file: File): Observable<string> {
     const user = this.firebaseAuth.currentUser;
     if (!user) {
