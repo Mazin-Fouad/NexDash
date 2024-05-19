@@ -1,3 +1,11 @@
+export interface OrderHistory {
+  material: string;
+  orderDate: string;
+  price: number;
+  quantity: number;
+  status: string;
+}
+
 export interface ClientsData {
   address: {
     city: string;
@@ -12,4 +20,5 @@ export interface ClientsData {
   id: string;
   phone: string;
   status: string;
+  orderHistory: OrderHistory[];
 }

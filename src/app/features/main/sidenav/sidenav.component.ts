@@ -41,6 +41,8 @@ export class SidenavComponent implements OnInit, OnDestroy, AfterViewInit {
   router = inject(Router);
   public dialog = inject(MatDialog);
   @ViewChild('dashboardLink') dashboardLink!: ElementRef;
+  date = new Date();
+  time = this.date.getHours();
 
   constructor(@Inject(PLATFORM_ID) private platformId: Object) {}
 

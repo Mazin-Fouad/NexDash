@@ -38,6 +38,13 @@ export class ClientsService {
       id: doc.id,
       phone: doc.phone,
       status: doc.status,
+      orderHistory: (doc.ordersHistoy || []).map((order: any) => ({
+        material: order.material,
+        orderDate: order.orderDate,
+        price: order.price,
+        quantity: order.quantity,
+        status: order.status,
+      })),
     }));
   }
 }

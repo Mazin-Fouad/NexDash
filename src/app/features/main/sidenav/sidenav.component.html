@@ -39,6 +39,15 @@
             >NexDash</span
           >
         </a>
+
+        <div class="text-white text-sm">
+          @if (time > 12) {
+          <h1>Good Afternoon {{ currentUser?.displayName }}</h1>
+          }@else {
+          <h1>Good Morning {{ currentUser?.displayName }}</h1>
+
+          }
+        </div>
       </div>
       <!-- Dark mode toggle button -->
       <div class="ms-auto">
