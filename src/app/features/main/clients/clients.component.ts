@@ -38,9 +38,8 @@ export class ClientsComponent implements OnInit, OnDestroy {
 
   openDialog(client: ClientsData) {
     this.dialog.open(ClientDetailsComponent, {
-      data: {
-        clientData: client,
-      },
+      data: client,
+      width: '90vw',
     });
   }
 

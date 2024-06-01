@@ -1,8 +1,52 @@
-<section class="w-full h-full">
-  <p>
-    Lorem, ipsum dolor sit amet consectetur adipisicing elit. Ratione,
-    praesentium. Atque qui voluptas hic molestiae labore repellendus expedita
-    provident! Saepe mollitia culpa rerum, suscipit ex molestias porro. Nostrum,
-    maiores repellendus?
-  </p>
+<section
+  class="w-full p-5 bg-white dark:bg-gray-800 dark:border-gray-700 dark:text-white"
+>
+  <h1 class="text-2xl mb-6">Client expanded details:</h1>
+
+  <div class="grid grid-cols-4 gap-5">
+    <div class="text-sm p-2 border w-fit">
+      <p class="flex items-center">
+        <mat-icon fontIcon="apartment"></mat-icon>
+        <span class="ms-2">Client Name: {{ client.companyName }}</span>
+      </p>
+
+      <p class="flex items-center">
+        <mat-icon fontIcon="person"></mat-icon
+        ><span class="ms-2"> {{ client.contactPerson }}</span>
+      </p>
+      <p class="flex items-center">
+        <mat-icon fontIcon="phone"></mat-icon
+        ><span class="ms-2"> {{ client.phone }}</span>
+      </p>
+      <p class="flex items-center">
+        <mat-icon fontIcon="email"></mat-icon
+        ><span class="ms-2">{{ client.email }}</span>
+      </p>
+    </div>
+
+    <div class="col-span-3 flex justify-around items-end">
+      <span class="flex items-center p3">
+        <mat-icon aria-label="Client since" fontIcon="check_circle"></mat-icon>
+        {{ client.clientSince }}</span
+      >
+      <span class="flex items-center p3">
+        <mat-icon aria-label="Client ID" fontIcon="fingerprint"></mat-icon>
+        {{ client.id }}</span
+      >
+
+      @switch ( client.status ) { @case ('active') {
+      <span class="bg-red-700 p-3 rounded-md"
+        >Client status: {{ client.status }}</span
+      >
+      } @case ('average ') {
+      <span class="bg-orange-500 p-3 rounded-md"
+        >Client status: {{ client.status }}</span
+      >
+      } @case ('lazy') {
+      <span class="bg-lime-700 p-3 rounded-md"
+        >Client status: {{ client.status }}</span
+      >
+      } }
+    </div>
+  </div>
 </section>

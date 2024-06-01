@@ -14,6 +14,7 @@ import {
 } from '@angular/common/http';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import { ErrorInterceptor } from './core/interceptors/error.interceptor';
+import { DatePipe } from '@angular/common';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -31,5 +32,6 @@ export const appConfig: ApplicationConfig = {
       useClass: ErrorInterceptor,
       multi: true,
     },
+    DatePipe,
   ],
 };

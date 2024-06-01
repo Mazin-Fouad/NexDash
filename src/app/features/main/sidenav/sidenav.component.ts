@@ -11,20 +11,14 @@ import {
   ViewChild,
   inject,
 } from '@angular/core';
-import { Router, RouterOutlet } from '@angular/router';
+import { Router } from '@angular/router';
 import { initFlowbite } from 'flowbite';
 import { Subscription } from 'rxjs';
 import { DarkModeService } from '../../../core/services/darkMode/dark-mode.service';
 import { AuthService } from '../../../core/services/auth/auth.service';
 import { User } from '../../../core/models/user';
-import { User as FirebaseUser } from '@firebase/auth';
-import {
-  MatDialog,
-  MatDialogActions,
-  MatDialogClose,
-  MatDialogContent,
-  MatDialogTitle,
-} from '@angular/material/dialog';
+
+import { MatDialog } from '@angular/material/dialog';
 import { UpdateProfileComponent } from './update-profile/update-profile.component';
 
 @Component({
@@ -35,8 +29,8 @@ import { UpdateProfileComponent } from './update-profile/update-profile.componen
 export class SidenavComponent implements OnInit, OnDestroy, AfterViewInit {
   private subscriptions: Subscription[] = [];
   @HostBinding('class.dark') isDarkMode: boolean = false;
-  authService = inject(AuthService);
   darkModeService = inject(DarkModeService);
+  authService = inject(AuthService);
   currentUser: User | null = null;
   router = inject(Router);
   public dialog = inject(MatDialog);
