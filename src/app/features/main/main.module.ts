@@ -15,6 +15,7 @@ import { AngularFirestoreModule } from '@angular/fire/compat/firestore';
 import { environment } from '../../../environments/environment.development';
 import { MatIconModule } from '@angular/material/icon';
 import { ClientDetailsComponent } from './client-details/client-details.component';
+import { OrderCardComponent } from './order-card/order-card.component';
 
 @NgModule({
   declarations: [
@@ -24,6 +25,7 @@ import { ClientDetailsComponent } from './client-details/client-details.componen
     MainComponent,
     DashboardComponent,
     ClientDetailsComponent,
+    OrderCardComponent,
   ],
   imports: [
     CommonModule,

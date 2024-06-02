@@ -1,8 +1,11 @@
 export interface OrderHistory {
+  invoiceNumber: string;
   material: string;
   orderDate: string;
+  orderID: number;
   price: number;
   quantity: number;
+  receiptNumber: string;
   status: string;
 }
 
