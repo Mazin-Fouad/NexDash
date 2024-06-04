@@ -37,6 +37,16 @@
       <span>Quantity: {{ order.quantity }}KG</span>
       <span>Value: {{ order.price | currency : "EUR" }}</span>
     </div>
+    <p>
+      Payment status:<span
+        [ngClass]="{
+          'text-lime-700': order.paymentStatus === 'closed',
+          'text-red-600': order.paymentStatus === 'open'
+        }"
+      >
+        {{ order.paymentStatus | uppercase }}</span
+      >
+    </p>
   </div>
 
   }

@@ -36,13 +36,14 @@ export class ClientsService {
         id: doc.id,
         phone: doc.phone,
         status: doc.status,
-        orderHistory: (doc.ordersHistoy || []).map((order: any) => ({
+        orderHistory: (doc.ordersHistory || []).map((order: any) => ({
           invoiceNumber: order.invoiceNumber,
           material: order.material,
           orderDate: this.dateConversionService.convertTimestampToDate(
             order.orderDate
           ),
           orderID: order.orderID,
+          paymentStatus: order.paymentStatus,
           price: order.price,
           quantity: order.quantity,
           receiptNumber: order.receiptNumber,

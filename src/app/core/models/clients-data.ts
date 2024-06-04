@@ -3,6 +3,7 @@ export interface OrderHistory {
   material: string;
   orderDate: string;
   orderID: number;
+  paymentStatus: string;
   price: number;
   quantity: number;
   receiptNumber: string;
