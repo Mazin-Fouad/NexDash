@@ -24,29 +24,88 @@
       </p>
     </div>
 
-    <div class="col-span-3 flex justify-around items-end">
-      <span class="flex items-center p3">
-        <mat-icon aria-label="Client since" fontIcon="check_circle"></mat-icon>
-        {{ client.clientSince }}</span
-      >
-      <span class="flex items-center p3">
-        <mat-icon aria-label="Client ID" fontIcon="fingerprint"></mat-icon>
-        {{ client.id }}</span
-      >
+    <div class="flex flex-col col-span-3">
+      <div class="w-full flex justify-between mb-5">
+        <span class="p3 text-center"
+          >Total orders: {{ client.orderHistory.length }}</span
+        >
 
-      @switch ( client.status ) { @case ('active') {
-      <span class="bg-red-700 p-3 rounded-md"
-        >Client status: {{ client.status }}</span
-      >
-      } @case ('average ') {
-      <span class="bg-orange-500 p-3 rounded-md"
-        >Client status: {{ client.status }}</span
-      >
-      } @case ('lazy') {
-      <span class="bg-lime-700 p-3 rounded-md"
-        >Client status: {{ client.status }}</span
-      >
-      } }
+        <button
+          id="dropdownDefaultButton"
+          data-dropdown-toggle="dropdown"
+          class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+          type="button"
+        >
+          Preferred delivery partners
+          <svg
+            class="w-2.5 h-2.5 ms-3"
+            aria-hidden="true"
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 10 6"
+          >
+            <path
+              stroke="currentColor"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="m1 1 4 4 4-4"
+            />
+          </svg>
+        </button>
+
+        <!-- Dropdown menu -->
+        <div
+          id="dropdown"
+          class="w-56 z-10 hidden bg-white divide-y divide-gray-100 rounded-lg shadow dark:bg-gray-700"
+        >
+          <ul
+            class="py-2 text-sm text-gray-700 dark:text-gray-200"
+            aria-labelledby="dropdownDefaultButton"
+          >
+            @for (deliveryPartner of client.deliveryMethods; track $index) {
+            <li>
+              <a
+                href="#"
+                class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
+                >{{ deliveryPartner }}</a
+              >
+            </li>
+            }
+          </ul>
+        </div>
+
+        <span class="p3 text-center"
+          >Total Transactions: {{ totalTransactions | currency : "EUR" }}</span
+        >
+      </div>
+      <div class="w-full flex justify-between">
+        <span class="flex items-center p3">
+          <mat-icon
+            aria-label="Client since"
+            fontIcon="check_circle"
+          ></mat-icon>
+          {{ client.clientSince }}</span
+        >
+        <span class="flex items-center p3">
+          <mat-icon aria-label="Client ID" fontIcon="fingerprint"></mat-icon>
+          {{ client.id }}</span
+        >
+
+        @switch ( client.status ) { @case ('active') {
+        <span class="bg-red-700 p-3 rounded-md"
+          >Client status: {{ client.status }}</span
+        >
+        } @case ('average ') {
+        <span class="bg-orange-500 p-3 rounded-md"
+          >Client status: {{ client.status }}</span
+        >
+        } @case ('lazy') {
+        <span class="bg-lime-700 p-3 rounded-md"
+          >Client status: {{ client.status }}</span
+        >
+        } }
+      </div>
     </div>
 
     <div class="mt-10">

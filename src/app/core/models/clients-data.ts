@@ -20,6 +20,7 @@ export interface ClientsData {
   clientSince: string;
   companyName: string;
   contactPerson: string;
+  deliveryMethods: string[];
   email: string;
   id: string;
   phone: string;

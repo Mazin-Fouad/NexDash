@@ -32,6 +32,7 @@ export class ClientsService {
         ),
         companyName: doc.companyName,
         contactPerson: doc.contactPerson,
+        deliveryMethods: doc.deliveryMethods,
         email: doc.email,
         id: doc.id,
         phone: doc.phone,
