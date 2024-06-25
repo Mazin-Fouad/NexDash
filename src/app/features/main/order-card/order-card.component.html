@@ -1,6 +1,6 @@
 <section>
-  @for (order of orderDetails; track $index) {
   <div
+    *ngFor="let order of orderDetails; let i = index"
     class="border border-l-4 rounded-md p-3 text-sm w-fit"
     [ngClass]="{
       'border-l-lime-700': order.status === 'delivered',
@@ -12,22 +12,23 @@
 
     <div class="mt-4 flex gap-3">
       <div>
-        @switch (order.status) { @case ('delivered') {
-        <span class="bg-lime-700 p-1 rounded-md">{{
-          order.status | uppercase
-        }}</span>
-        } @case ('pending') {
-        <span class="bg-orange-600 p-1 rounded-md">{{
-          order.status | uppercase
-        }}</span>
-        } @case ('overdue') {
-        <span class="bg-red-700 p-1 rounded-md">{{
-          order.status | uppercase
-        }}</span>
-        } }
+        <ng-container [ngSwitch]="order.status">
+          <span
+            *ngSwitchCase="'delivered'"
+            class="bg-lime-700 p-1 rounded-md"
+            >{{ order.status | uppercase }}</span
+          >
+          <span
+            *ngSwitchCase="'pending'"
+            class="bg-orange-600 p-1 rounded-md"
+            >{{ order.status | uppercase }}</span
+          >
+          <span *ngSwitchCase="'overdue'" class="bg-red-700 p-1 rounded-md">{{
+            order.status | uppercase
+          }}</span>
+        </ng-container>
       </div>
-
-      <span> Order date: {{ order.orderDate }}</span>
+      <span>Order date: {{ order.orderDate }}</span>
     </div>
 
     <p class="mt-4">Invoice Nr. {{ order.invoiceNumber }}</p>
@@ -37,17 +38,66 @@
       <span>Quantity: {{ order.quantity }}KG</span>
       <span>Value: {{ order.price | currency : "EUR" }}</span>
     </div>
-    <p>
-      Payment status:<span
-        [ngClass]="{
-          'text-lime-700': order.paymentStatus === 'closed',
-          'text-red-600': order.paymentStatus === 'open'
-        }"
-      >
-        {{ order.paymentStatus | uppercase }}</span
-      >
-    </p>
-  </div>
 
-  }
+    <div class="flex items-center gap-2">
+      <span>Payment status</span>
+
+      <div>
+        <button
+          id="dropdownDefaultButton{{ i }}"
+          (click)="toggleDropdown(i)"
+          [ngClass]="{
+            'bg-green-700': order.paymentStatus === 'closed',
+            'bg-red-700': order.paymentStatus === 'open'
+          }"
+          class="text-white font-medium rounded-lg text-sm px-2 py-1 text-center inline-flex items-center"
+          type="button"
+        >
+          {{ order.paymentStatus | uppercase }}
+          <svg
+            class="w-2.5 h-2.5 ms-3"
+            aria-hidden="true"
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 10 6"
+          >
+            <path
+              stroke="currentColor"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="m1 1 4 4 4-4"
+            />
+          </svg>
+        </button>
+
+        <!-- Dropdown menu -->
+        <div
+          id="dropdown{{ i }}"
+          [class.hidden]="!dropdowns[i]"
+          class="z-10 bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700"
+        >
+          <ul
+            class="py-2 text-sm text-gray-700 dark:text-gray-200"
+            [attr.aria-labelledby]="'dropdownDefaultButton' + i"
+          >
+            <li>
+              <a
+                (click)="changePaymentStatus(i, 'open')"
+                class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
+                >Open</a
+              >
+            </li>
+            <li>
+              <a
+                (click)="changePaymentStatus(i, 'closed')"
+                class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
+                >Closed</a
+              >
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
 </section>

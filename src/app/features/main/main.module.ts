@@ -16,6 +16,8 @@ import { environment } from '../../../environments/environment.development';
 import { MatIconModule } from '@angular/material/icon';
 import { ClientDetailsComponent } from './client-details/client-details.component';
 import { OrderCardComponent } from './order-card/order-card.component';
+import { MatMenuModule } from '@angular/material/menu';
+import { MatDividerModule } from '@angular/material/divider';
 
 @NgModule({
   declarations: [
@@ -29,6 +31,7 @@ import { OrderCardComponent } from './order-card/order-card.component';
   ],
   imports: [
     CommonModule,
+    MatMenuModule,
     MainRoutingModule,
     RouterOutlet,
     AngularFireModule.initializeApp(environment.firebaseConfig),
@@ -38,6 +41,7 @@ import { OrderCardComponent } from './order-card/order-card.component';
     FormsModule,
     HttpClientModule,
     MatIconModule,
+    MatDividerModule,
   ],
   providers: [DatePipe],
 })
