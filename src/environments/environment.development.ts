@@ -7,4 +7,6 @@ export const environment = {
     messagingSenderId: '14979070778',
     appId: '1:14979070778:web:58844e29b395fda8912e03',
   },
+
+  countriesApi: 'https://countriesnow.space/api/v0.1/countries/flag/images',
 };

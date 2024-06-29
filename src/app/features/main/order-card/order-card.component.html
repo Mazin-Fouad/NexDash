@@ -39,7 +39,7 @@
       <span>Value: {{ order.price | currency : "EUR" }}</span>
     </div>
 
-    <div class="flex items-center gap-2">
+    <div class="mt-2 flex items-center gap-2">
       <span>Payment status</span>
 
       <div>
@@ -47,7 +47,7 @@
           id="dropdownDefaultButton{{ i }}"
           (click)="toggleDropdown(i)"
           [ngClass]="{
-            'bg-green-700': order.paymentStatus === 'closed',
+            'bg-lime-700': order.paymentStatus === 'closed',
             'bg-red-700': order.paymentStatus === 'open'
           }"
           class="text-white font-medium rounded-lg text-sm px-2 py-1 text-center inline-flex items-center"

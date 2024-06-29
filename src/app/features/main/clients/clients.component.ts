@@ -9,6 +9,7 @@ import {
   MatDialogContent,
 } from '@angular/material/dialog';
 import { ClientDetailsComponent } from '../client-details/client-details.component';
+import { NewClientComponent } from '../new-client/new-client.component';
 
 @Component({
   selector: 'app-clients',
@@ -39,6 +40,12 @@ export class ClientsComponent implements OnInit, OnDestroy {
   openDialog(client: ClientsData) {
     this.dialog.open(ClientDetailsComponent, {
       data: client,
+      width: '90vw',
+    });
+  }
+
+  openNewClientDialog() {
+    this.dialog.open(NewClientComponent, {
       width: '90vw',
     });
   }

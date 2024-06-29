@@ -18,6 +18,9 @@ import { ClientDetailsComponent } from './client-details/client-details.componen
 import { OrderCardComponent } from './order-card/order-card.component';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatDividerModule } from '@angular/material/divider';
+import { NewClientComponent } from './new-client/new-client.component';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
 
 @NgModule({
   declarations: [
@@ -28,6 +31,7 @@ import { MatDividerModule } from '@angular/material/divider';
     DashboardComponent,
     ClientDetailsComponent,
     OrderCardComponent,
+    NewClientComponent,
   ],
   imports: [
     CommonModule,
@@ -42,6 +46,8 @@ import { MatDividerModule } from '@angular/material/divider';
     HttpClientModule,
     MatIconModule,
     MatDividerModule,
+    MatFormFieldModule,
+    MatInputModule,
   ],
   providers: [DatePipe],
 })
