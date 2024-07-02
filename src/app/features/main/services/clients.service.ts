@@ -5,8 +5,9 @@ import {
   collectionData,
   CollectionReference,
   DocumentData,
+  addDoc,
 } from '@angular/fire/firestore';
-import { Observable, map } from 'rxjs';
+import { Observable, catchError, from, map } from 'rxjs';
 import { ClientsData } from '../../../core/models/clients-data';
 import { DateConversionService } from './date-conversion.service'; // Import the new service
 
@@ -53,5 +54,21 @@ export class ClientsService {
       };
       return clientData;
     });
+  }
+
+  addClient(clientData: any): Observable<void> {
+    const clientsCollection = collection(
+      this.firestore,
+      'clients'
+    ) as CollectionReference<DocumentData>;
+    return from(addDoc(clientsCollection, clientData)).pipe(
+      map(() => {
+        console.log('Client added successfully');
+      }),
+      catchError((error) => {
+        console.error('Error adding client: ', error);
+        throw error;
+      })
+    );
   }
 }

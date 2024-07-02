@@ -9,6 +9,8 @@ import { DarkModeService } from '../../../core/services/darkMode/dark-mode.servi
 import { Subscription } from 'rxjs';
 import { CountriesService } from '../../../core/services/countries/countries.service';
 import { Country } from '../../../core/models/country';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { ClientsService } from '../services/clients.service';
 
 @Component({
   selector: 'app-new-client',
@@ -21,8 +23,32 @@ export class NewClientComponent implements OnInit, OnDestroy {
   private subscriptions: Subscription[] = [];
   countries: Country[] = [];
   error: string | null = null;
+  newClientForm: FormGroup;
 
-  constructor(private countriesService: CountriesService) {}
+  constructor(
+    private countriesService: CountriesService,
+    private clientsService: ClientsService,
+
+    private fb: FormBuilder
+  ) {
+    this.newClientForm = this.fb.group({
+      clientName: ['', Validators.required],
+      contactPerson: ['', Validators.required],
+      email: ['', [Validators.required, Validators.email]],
+      phone: [
+        '',
+        [Validators.required, Validators.pattern('[0-9]{3}-[0-9]{3}-[0-9]{4}')],
+      ],
+      activity: ['', Validators.required],
+      clientID: ['', Validators.required],
+      preferredDeliveryService: [''],
+      street: ['', Validators.required],
+      houseNo: ['', Validators.required],
+      city: ['', Validators.required],
+      zip: ['', Validators.required],
+      country: ['', Validators.required],
+    });
+  }
 
   ngOnInit(): void {
     this.subscribeDarkMode();
@@ -52,6 +78,23 @@ export class NewClientComponent implements OnInit, OnDestroy {
       }
     );
     this.subscriptions.push(darkModeSubscription);
+  }
+
+  onSubmit() {
+    if (this.newClientForm.valid) {
+      const newClientData = this.newClientForm.value;
+      this.clientsService.addClient(newClientData).subscribe({
+        next: () => {
+          console.log('Client data saved successfully');
+          this.newClientForm.reset();
+        },
+        error: (error) => {
+          console.error('Error saving client data:', error);
+        },
+      });
+    } else {
+      console.log('Form is invalid');
+    }
   }
 
   ngOnDestroy() {

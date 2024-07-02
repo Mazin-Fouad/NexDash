@@ -46,7 +46,7 @@ export class ClientsComponent implements OnInit, OnDestroy {
 
   openNewClientDialog() {
     this.dialog.open(NewClientComponent, {
-      width: '90vw',
+      width: '50vw',
     });
   }
 
